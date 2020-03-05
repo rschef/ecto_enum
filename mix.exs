@@ -38,7 +38,7 @@ defmodule EctoEnum.Mixfile do
       {:ecto, ">= 3.0.0"},
       {:ecto_sql, "> 3.0.0"},
       {:postgrex, ">= 0.0.0", optional: true},
-      {:mariaex, ">= 0.0.0", optional: true},
+      {:myxql, ">= 0.0.0", optional: true},
       {:ex_doc, "~> 0.19", only: [:docs, :dev]},
       {:earmark, "~> 1.2", only: [:docs, :dev]},
       {:inch_ex, ">= 0.0.0", only: [:dev, :test]}
