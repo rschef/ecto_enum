@@ -271,7 +271,7 @@ defmodule EctoEnumTest do
               ]}
   end
 
-  test "generates correct t() typespec for postgres types" do
+  test "generates correct t() typespec for postgres types when enums are atoms" do
     assert Code.Typespec.fetch_types(EctoEnum.Typespec.TestModule.PGStatusEnum) ==
              {:ok,
               [
@@ -283,6 +283,21 @@ defmodule EctoEnumTest do
                       {:atom, 0, :active},
                       {:atom, 0, :inactive},
                       {:atom, 0, :archived}
+                    ]}, []}
+              ]}
+  end
+
+  test "generates correct t() typespec for postgres types when enums are strings" do
+    assert Code.Typespec.fetch_types(EctoEnum.Typespec.TestModule.PGRoleEnum) ==
+             {:ok,
+              [
+                type:
+                  {:t,
+                   {:type, 0, :union,
+                    [
+                      {:atom, 0, :user},
+                      {:atom, 0, :manager},
+                      {:atom, 0, :admin},
                     ]}, []}
               ]}
   end
