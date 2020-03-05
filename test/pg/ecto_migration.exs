@@ -11,9 +11,11 @@ defmodule Ecto.Integration.SetupMigration do
     end
 
     execute("CREATE TYPE status AS ENUM ('registered', 'active', 'inactive', 'archived')")
+    execute("CREATE TYPE role AS ENUM ('user', 'manager', 'admin')")
 
     create table(:users_pg) do
       add(:status, :status)
+      add(:role, :role)
     end
   end
 end
