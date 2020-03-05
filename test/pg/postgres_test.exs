@@ -68,15 +68,11 @@ defmodule EctoEnum.PostgresTest do
 
   test "loads enum in type defined in defenum/3" do
     status = :active
-    user = TestRepo.insert!(%User{status: status})
+    role = "user"
+    user = TestRepo.insert!(%User{status: status, role: role})
     user = TestRepo.get!(User, user.id)
 
     assert user.status === status
-
-    role = "user"
-    user = TestRepo.insert!(%User{role: role})
-    user = TestRepo.get!(User, user.id)
-
     assert user.role === role
   end
 
