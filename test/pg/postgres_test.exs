@@ -74,6 +74,14 @@ defmodule EctoEnum.PostgresTest do
 
     assert user.status === status
     assert user.role === role
+
+    status = "active"
+    role = :user
+    user = TestRepo.insert!(%User{status: status, role: role})
+    user = TestRepo.get!(User, user.id)
+
+    assert user.status === :"#{status}"
+    assert user.role === "#{role}"
   end
 
   test "raises when input is not in the enum map" do
