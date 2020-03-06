@@ -11,7 +11,10 @@ defmodule EctoEnum.Typespec do
     end)
   end
 
-  defp add_type(type, acc), do: {:|, [], [type, acc]}
+  defp add_type(type, acc), do: {:|, [], [to_atom(type), to_atom(acc)]}
+
+  defp to_atom(term) when is_atom(term) or is_tuple(term), do: term
+  defp to_atom(string) when is_binary(string), do: String.to_atom(string)
 end
 
 defmodule EctoEnum.Typespec.TestModule do
@@ -26,4 +29,6 @@ defmodule EctoEnum.Typespec.TestModule do
   defenum StatusEnum, registered: 0, active: 1, inactive: 2, archived: 3
 
   defenum PGStatusEnum, :status, [:registered, :active, :inactive, :archived]
+
+  defenum PGRoleEnum, :role, ["user", "manager", "admin"]
 end

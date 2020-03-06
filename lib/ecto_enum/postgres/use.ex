@@ -1,6 +1,7 @@
 defmodule EctoEnum.Postgres.Use do
   @moduledoc false
 
+  alias EctoEnum.Postgres.Use, as: PostgresUse
   alias EctoEnum.Typespec
 
   defmacro __using__(input) do
@@ -12,23 +13,25 @@ defmodule EctoEnum.Postgres.Use do
       @type t :: unquote(typespec)
 
       enums = input[:enums]
-      valid_values = enums ++ Enum.map(enums, &Atom.to_string/1)
+      atom_enums = Enum.map(enums, &PostgresUse.to_atom/1)
+      string_enums = Enum.map(enums, &to_string/1)
+      valid_values = atom_enums ++ string_enums
 
-      for atom <- enums do
-        string = Atom.to_string(atom)
+      for enum <- enums do
+        string = to_string(enum)
+        atom = PostgresUse.to_atom(string)
 
-        def cast(unquote(atom)), do: {:ok, unquote(atom)}
-        def cast(unquote(string)), do: {:ok, unquote(atom)}
-      end
-
-      def cast(_other), do: :error
-
-      for atom <- enums do
-        string = Atom.to_string(atom)
+        def cast(unquote(atom)), do: {:ok, unquote(enum)}
+        def cast(unquote(string)), do: {:ok, unquote(enum)}
 
         def dump(unquote(atom)), do: {:ok, unquote(string)}
         def dump(unquote(string)), do: {:ok, unquote(string)}
+
+        def load(unquote(atom)), do: {:ok, unquote(enum)}
+        def load(unquote(string)), do: {:ok, unquote(enum)}
       end
+
+      def cast(_other), do: :error
 
       def dump(term) do
         msg =
@@ -38,16 +41,11 @@ defmodule EctoEnum.Postgres.Use do
         raise Ecto.ChangeError, message: msg
       end
 
+      def load(_other), do: :error
+
       def embed_as(_), do: :self
 
       def equal?(term1, term2), do: term1 == term2
-
-      for atom <- enums do
-        string = Atom.to_string(atom)
-
-        def load(unquote(atom)), do: {:ok, unquote(atom)}
-        def load(unquote(string)), do: {:ok, unquote(atom)}
-      end
 
       def valid_value?(value) do
         Enum.member?(unquote(valid_values), value)
@@ -88,4 +86,7 @@ defmodule EctoEnum.Postgres.Use do
       end
     end
   end
+
+  def to_atom(atom) when is_atom(atom), do: atom
+  def to_atom(string) when is_binary(string), do: String.to_atom(string)
 end

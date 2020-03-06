@@ -23,13 +23,6 @@ defmodule EctoEnum.Postgres do
     quote do
       list = unquote(list) |> Macro.escape()
 
-      list =
-        if Enum.all?(list, &is_atom/1) do
-          list
-        else
-          Enum.map(list, &String.to_atom/1)
-        end
-
       opts = Keyword.merge([enums: list, type: unquote(type)], unquote(options))
 
       defmodule unquote(module) do
